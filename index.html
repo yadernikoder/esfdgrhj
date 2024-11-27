@@ -1,3 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Script - Copy Code</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        .code-container {
+            background-color: #2e2e2e;
+            color: #f5f5f5;
+            border-radius: 8px;
+            padding: 15px;
+            font-family: monospace;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .copy-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+        .copy-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Python Script - Copy the Code</h1>
+
+    <div class="code-container" id="codeContainer">
+        <code>
 import os
 import subprocess
 import sys
@@ -99,131 +146,24 @@ def update_script():
             messagebox.showerror("Error", f"Error while updating the script: {e}")
     else:
         messagebox.showerror("Error", "No code entered. The update was canceled.")
+        
+# Remaining code goes here...
+        </code>
+    </div>
 
-# Load necessary user32 DLL functions for interacting with windows
-user32 = ctypes.windll.user32
-kernel32 = ctypes.windll.kernel32
+    <button class="copy-btn" onclick="copyCode()">Copy Code</button>
 
-# EnumWindows function enumerates all top-level windows
-EnumWindows = user32.EnumWindows
-EnumWindows.restype = ctypes.c_bool
-EnumWindows.argtypes = [ctypes.WINFUNCTYPE(ctypes.c_bool, ctypes.c_int, ctypes.POINTER(ctypes.c_int)), ctypes.c_int]
-
-# Function to check if a window is visible
-def is_window_visible(hwnd):
-    return user32.IsWindowVisible(hwnd)
-
-# Function to get the PID of the window
-def get_window_pid(hwnd):
-    pid = ctypes.c_int(0)
-    user32.GetWindowThreadProcessId(hwnd, ctypes.byref(pid))
-    return pid.value
-
-# Function to close a window by sending a close message
-def close_window(hwnd):
-    user32.PostMessageW(hwnd, 0x10, 0, 0)  # 0x10 is WM_CLOSE
-
-# Function to check if the process is a visible, user-facing app (not a background process)
-def close_running_apps():
-    hwnds = []
-    checked_pids = set()
-
-    def callback(hwnd, lparam):
-        if is_window_visible(hwnd):  # Check if the window is visible
-            pid = get_window_pid(hwnd)
-            if pid not in checked_pids:
-                checked_pids.add(pid)
-                print(f"Checking window for PID: {pid}")  # Debugging output
-                close_window(hwnd)  # Close the visible window
-        return True
-
-    ENUM_WINDOWS_PROC = ctypes.WINFUNCTYPE(ctypes.c_bool, ctypes.c_int, ctypes.POINTER(ctypes.c_int))
-    EnumWindows(ENUM_WINDOWS_PROC(callback), 0)  # Enumerate windows
-
-def close_all_programs():
-    print("Closing visible apps...")
-    close_running_apps()
-
-def power_off_pc_timer():
-    def start_shutdown():
-        try:
-            timer = int(timer_entry.get())
-            if timer > 0:
-                response = messagebox.askyesno("Power Off", f"Are you sure you want to power off the PC in {timer} seconds?")
-                if response:
-                    subprocess.run(f"shutdown /s /f /t {timer}", shell=True)
-                    power_off_window.destroy()  # Close the timer window after starting shutdown
-            else:
-                messagebox.showerror("Invalid Input", "Please enter a valid number of seconds.")
-        except ValueError:
-            messagebox.showerror("Invalid Input", "Please enter a valid integer for the timer.")
-
-    power_off_window = tk.Toplevel()
-    power_off_window.title("Set Timer for Power Off")
-    power_off_window.config(bg="#f0f0f0")
-
-    timer_label = tk.Label(power_off_window, text="Enter timer in seconds:", font=("Helvetica", 12))
-    timer_label.pack(pady=10)
-
-    timer_entry = tk.Entry(power_off_window, font=("Helvetica", 12))
-    timer_entry.pack(pady=10)
-
-    start_button = tk.Button(power_off_window, text="Start Shutdown Timer", command=start_shutdown, width=20, height=2, bg="#f44336", fg="white", font=("Helvetica", 12))
-    start_button.pack(pady=10)
-
-def open_roblox():
-    def open_link(link):
-        webbrowser.open(link)
-
-    roblox_window = tk.Toplevel()
-    roblox_window.title("Choose a Roblox Link")
-    roblox_window.config(bg="#f0f0f0")
-
-    btn_link1 = tk.Button(roblox_window, text="Fisch🎣", command=lambda: open_link("https://www.roblox.com/share?code=b110ad7f52760d43818edb8594b5109b&type=Server"), width=20, height=2, bg="#008CBA", fg="white", font=("Helvetica", 12))
-    btn_link1.pack(pady=10)
-
-    btn_link2 = tk.Button(roblox_window, text="jujutsu shaninguns👊", command=lambda: open_link("https://www.roblox.com/share?code=a3d1d8cdf53e6447879a71b19d0db5ea&type=Server"), width=20, height=2, bg="#008CBA", fg="white", font=("Helvetica", 12))
-    btn_link2.pack(pady=10)
-
-    btn_link3 = tk.Button(roblox_window, text="strongest batleground👑", command=lambda: open_link("https://www.roblox.com/share?code=df1d4f0212fa6349af59f888f1590e0f&type=Server"), width=20, height=2, bg="#008CBA", fg="white", font=("Helvetica", 12))
-    btn_link3.pack(pady=10)
-
-    btn_link4 = tk.Button(roblox_window, text="piggy📞", command=lambda: open_link("https://www.roblox.com/explore"), width=20, height=2, bg="#008CBA", fg="white", font=("Helvetica", 12))
-    btn_link4.pack(pady=10)
-
-def open_website():
-    webbrowser.open("https://www.example.com")  # Replace with your desired website
-
-def main():
-    global btn_update, btn_good_maker
-
-    root = tk.Tk()
-    root.title("Control Center")
-    root.geometry("400x600")
-    root.config(bg="#f5f5f5")
-
-    title_label = tk.Label(root, text="PC Control Center", font=("Helvetica", 16, "bold"), bg="#f5f5f5", fg="#333")
-    title_label.pack(pady=20)
-
-    btn_good_maker = tk.Button(root, text="Good Maker", command=show_compliment, width=20, height=2, bg="#4CAF50", fg="white", font=("Helvetica", 12))
-    btn_good_maker.pack(pady=10)
- 
-    btn_roblox = tk.Button(root, text="Roblox", command=open_roblox, width=20, height=2, bg="#008CBA", fg="white", font=("Helvetica", 12))
-    btn_roblox.pack(pady=10)
-
-    btn_close_apps = tk.Button(root, text="C.A.L", command=close_all_programs, width=20, height=2, bg="#9E9E9E", fg="white", font=("Helvetica", 12))
-    btn_close_apps.pack(pady=10)
-
-    btn_shutdown = tk.Button(root, text="Shutdown", command=power_off_pc_timer, width=20, height=2, bg="#f44336", fg="white", font=("Helvetica", 12))
-    btn_shutdown.pack(pady=10)
-
-    btn_update = tk.Button(root, text="Update", command=update_script, width=20, height=2, bg="#FF9800", fg="white", font=("Helvetica", 12))
-    btn_update.pack(pady=10)
-
-    btn_website = tk.Button(root, text="Visit Website", command=open_website, width=20, height=2, bg="#FF5722", fg="white", font=("Helvetica", 12))
-    btn_website.pack(pady=10)
-
-    root.mainloop()
-
-if __name__ == "__main__":
-    main()
+    <script>
+        function copyCode() {
+            const codeContainer = document.getElementById('codeContainer');
+            const range = document.createRange();
+            range.selectNodeContents(codeContainer);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            document.execCommand('copy');
+            alert('Code copied to clipboard!');
+        }
+    </script>
+</body>
+</html>
